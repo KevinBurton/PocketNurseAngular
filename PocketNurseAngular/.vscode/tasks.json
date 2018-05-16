@@ -1,4 +1,5 @@
 {
+    // dotnet publish -o ~/Projects/PocketNurseAngularPublish
     "version": "2.0.0",
     "tasks": [
         {
