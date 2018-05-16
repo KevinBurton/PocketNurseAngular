@@ -13,14 +13,32 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "publish",
+            "label": "restore",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "restore"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish debug",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/PocketNurseAngular.csproj",
-                "-o ${workspaceFolder}/../../PocketNurseAngularPublish"
-            ]
+                "--configuration",
+                "Debug",
+                "--output",
+                "..\\..\\PocketNurseAngularPublish"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "type": "npm",
+            "script": "install",
+            "path": "~/Projects/PocketNurseAngular/PocketNurseAngular",
+            "problemMatcher": []
         }
     ]
 }
