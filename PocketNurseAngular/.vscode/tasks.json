@@ -11,6 +11,16 @@
                 "${workspaceFolder}/PocketNurseAngular.csproj"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/PocketNurseAngular.csproj",
+                "-o ${workspaceFolder}/../../PocketNurseAngularPublish"
+            ]
         }
     ]
 }
