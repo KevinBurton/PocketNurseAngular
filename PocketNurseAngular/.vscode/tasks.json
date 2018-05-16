@@ -30,7 +30,9 @@
                 "--configuration",
                 "Debug",
                 "--output",
-                "..\\..\\PocketNurseAngularPublish"
+                "../../PocketNurseAngularPublish",
+                "--runtime",
+                "win-x64"
             ],
             "problemMatcher": "$msCompile"
         },
