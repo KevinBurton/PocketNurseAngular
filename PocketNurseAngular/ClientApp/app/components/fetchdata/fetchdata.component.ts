@@ -52,9 +52,10 @@ export class FetchDataComponent implements OnInit {
                     for (var i = 0; i < length; i++) {
                       binary += String.fromCharCode(bytes[i]);
                     }
-                    console.log(fileType(bytes));
+
                     // call 'xlsx' to read the file
                     this.workbook = XLSX.read(binary, {type: 'binary', cellDates:true, cellStyles:true});
+
                     var listItem = document.createElement('li');
                     var mimeType = fileType(bytes).mime;
                     if (this.validFileType(mimeType)) {
