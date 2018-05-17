@@ -3,6 +3,7 @@ import { Http } from '@angular/http';
 import * as XLSX from 'xlsx';
 import * as fileType from 'file-type';
 import { MaxLengthValidator } from '@angular/forms';
+import { CabinetSession } from '../../shared/session';
 
 @Component({
     selector: 'fetchdata',
@@ -55,7 +56,8 @@ export class FetchDataComponent implements OnInit {
 
                     // call 'xlsx' to read the file
                     this.workbook = XLSX.read(binary, {type: 'binary', cellDates:true, cellStyles:true});
-
+                    var session = new CabinetSession();
+                    var sessionRe = new RegExp('[Ss]ession.*');
                     var listItem = document.createElement('li');
                     var mimeType = fileType(bytes).mime;
                     if (this.validFileType(mimeType)) {
@@ -69,9 +71,15 @@ export class FetchDataComponent implements OnInit {
                     list.appendChild(excelList);
                     if(this.workbook) {
                         for(let sheetName of this.workbook.SheetNames) {
-                            var range = XLSX.utils.decode_range(this.workbook.Sheets[sheetName]['!ref'] as string);
                             var excelListItem = document.createElement('li');
-                            excelListItem.textContent = sheetName + ', (' + range.e.r + ',' + range.e.c + ')';
+                            var sheetArray = this.sheetArray(this.workbook.Sheets[sheetName]);
+                            if(sessionRe.test(sheetName)) {
+                                session.from = sheetArray[1][0];
+                                session.to = sheetArray[1][1];
+                                session.siteId = sheetArray[1][2];
+                                session.omniId = sheetArray[1][3];
+                            }
+                            excelListItem.textContent = sheetName + ', (' + sheetArray.length + ',' + sheetArray[0].length + ')';
                             excelList.appendChild(excelListItem);
                         }
                     }
@@ -80,6 +88,26 @@ export class FetchDataComponent implements OnInit {
             fileReader.readAsArrayBuffer(curFiles[0]);
         }
     };
+    sheetArray (sheet: XLSX.WorkSheet): any[][] {
+        var result = [];
+        var row;
+        var rowNum;
+        var colNum;
+        var range = XLSX.utils.decode_range(sheet['!ref'] as string);
+        for(rowNum = range.s.r; rowNum <= range.e.r; rowNum++){
+           row = [];
+            for(colNum=range.s.c; colNum<=range.e.c; colNum++){
+               var nextCell = sheet[
+                  XLSX.utils.encode_cell({r: rowNum, c: colNum})
+               ];
+               if( typeof nextCell !== 'undefined' ){
+                row.push(nextCell.w);
+               }
+            }
+            result.push(row);
+        }
+        return result;
+     };     
     validFileType(fileType: String): Boolean {
         for (var i = 0; i < this.fileTypes.length; i++) {
             if (fileType === this.fileTypes[i]) {
