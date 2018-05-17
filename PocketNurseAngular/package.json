@@ -60,6 +60,8 @@
     "zone.js": "0.8.12"
   },
   "dependencies": {
+    "@types/file-type": "^5.2.1",
+    "file-type": "^8.0.0",
     "xlsx": "^0.12.12"
   }
 }
