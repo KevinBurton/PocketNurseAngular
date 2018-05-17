@@ -52,11 +52,6 @@ export class FetchDataComponent implements OnInit {
                     console.log(fileType(bytes));
                     // call 'xlsx' to read the file
                     var oFile = XLSX.read(binary, {type: 'binary', cellDates:true, cellStyles:true});
-                    for(let sheetName of oFile.SheetNames) {
-                        var range = XLSX.utils.decode_range(oFile.Sheets[sheetName]['!ref'] as string);
-                        console.log(sheetName);
-                        console.log(range.e);        
-                    }
                     var listItem = document.createElement('li');
                     var mimeType = fileType(bytes).mime;
                     if (this.validFileType(mimeType)) {
@@ -66,6 +61,16 @@ export class FetchDataComponent implements OnInit {
                     }
     
                     list.appendChild(listItem);
+                    var excelList = document.createElement('ul');
+                    list.appendChild(excelList);
+                    if(oFile) {
+                        for(let sheetName of oFile.SheetNames) {
+                            var range = XLSX.utils.decode_range(oFile.Sheets[sheetName]['!ref'] as string);
+                            var excelListItem = document.createElement('li');
+                            excelListItem.textContent = sheetName + ', (' + range.e.r + ',' + range.e.c + ')';
+                            excelList.appendChild(excelListItem);
+                        }
+                    }
                 }
             }
             fileReader.readAsArrayBuffer(curFiles[0]);
