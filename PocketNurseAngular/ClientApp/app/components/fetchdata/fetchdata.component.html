@@ -2,7 +2,6 @@
     <fieldset>
         <div class="panel-group">
             <label for="uploadFile">Choose images to upload (XLSX)</label>
-            <!-- https://stackoverflow.com/questions/4328947/limit-file-format-when-using-input-type-file -->
             <input type="file" id="uploadFile" name="file" accept=".xlsx" #input (change)="updateImageDisplay(input, preview)" required>
             <div class="preview" #preview>
                 <p>No files currently selected for upload</p>
