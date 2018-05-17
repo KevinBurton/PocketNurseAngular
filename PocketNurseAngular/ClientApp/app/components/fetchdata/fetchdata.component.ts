@@ -2,6 +2,7 @@ import { Component, Input, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { Http } from '@angular/http';
 import * as XLSX from 'xlsx';
 import * as fileType from 'file-type';
+import { MaxLengthValidator } from '@angular/forms';
 
 @Component({
     selector: 'fetchdata',
@@ -9,15 +10,17 @@ import * as fileType from 'file-type';
     styleUrls: [ './fetchdata.component.css' ]
 })
 export class FetchDataComponent implements OnInit {
-    content: ArrayBuffer;
-    name: String;
+    name: String | undefined | null;
+    workbook: XLSX.WorkBook | undefined | null;
     fileTypes: string[] = [
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     ];
 
     constructor() {
-
+        this.name = null;
+        this.workbook = null;
     }
+    
     ngOnInit(){
     }
 
@@ -42,20 +45,20 @@ export class FetchDataComponent implements OnInit {
             var fileReader: FileReader = new FileReader();
             fileReader.onloadend = (e) => {
                 if(e && e.target) {
-                    this.content = (e.target as FileReader).result;    
+                    var content = (e.target as FileReader).result;    
                     var binary = "";
-                    var bytes = new Uint8Array(this.content);
+                    var bytes = new Uint8Array(content);
                     var length = bytes.byteLength;
                     for (var i = 0; i < length; i++) {
                       binary += String.fromCharCode(bytes[i]);
                     }
                     console.log(fileType(bytes));
                     // call 'xlsx' to read the file
-                    var oFile = XLSX.read(binary, {type: 'binary', cellDates:true, cellStyles:true});
+                    this.workbook = XLSX.read(binary, {type: 'binary', cellDates:true, cellStyles:true});
                     var listItem = document.createElement('li');
                     var mimeType = fileType(bytes).mime;
                     if (this.validFileType(mimeType)) {
-                        listItem.textContent = 'File name ' + this.name + ', file size ' + this.returnFileSize(this.content.byteLength) + '.';
+                        listItem.textContent = 'File name ' + this.name + ', file size ' + this.returnFileSize(content.byteLength) + '.';
                     } else {
                         listItem.textContent = 'File name ' + this.name + ': Not a valid file type (' + mimeType + '). Update your selection.';
                     }
@@ -63,9 +66,9 @@ export class FetchDataComponent implements OnInit {
                     list.appendChild(listItem);
                     var excelList = document.createElement('ul');
                     list.appendChild(excelList);
-                    if(oFile) {
-                        for(let sheetName of oFile.SheetNames) {
-                            var range = XLSX.utils.decode_range(oFile.Sheets[sheetName]['!ref'] as string);
+                    if(this.workbook) {
+                        for(let sheetName of this.workbook.SheetNames) {
+                            var range = XLSX.utils.decode_range(this.workbook.Sheets[sheetName]['!ref'] as string);
                             var excelListItem = document.createElement('li');
                             excelListItem.textContent = sheetName + ', (' + range.e.r + ',' + range.e.c + ')';
                             excelList.appendChild(excelListItem);
