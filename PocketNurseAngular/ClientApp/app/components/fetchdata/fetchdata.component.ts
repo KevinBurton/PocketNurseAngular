@@ -57,7 +57,10 @@ export class FetchDataComponent implements OnInit {
                     // call 'xlsx' to read the file
                     this.workbook = XLSX.read(binary, {type: 'binary', cellDates:true, cellStyles:true});
                     var session = new CabinetSession();
-                    var sessionRe = new RegExp('[Ss]ession.*');
+                    var sessionRe = new RegExp('Session',  'i').compile();
+                    var patientRe = new RegExp('Patient Information', 'i').compile();
+                    var medOrderRe = new RegExp('Med Order Information', 'i').compile();
+                    var formularyRe = new RegExp('Items not in PN formulary', 'i').compile();
                     var listItem = document.createElement('li');
                     var mimeType = fileType(bytes).mime;
                     if (this.validFileType(mimeType)) {
@@ -73,11 +76,28 @@ export class FetchDataComponent implements OnInit {
                         for(let sheetName of this.workbook.SheetNames) {
                             var excelListItem = document.createElement('li');
                             var sheetArray = this.sheetArray(this.workbook.Sheets[sheetName]);
-                            if(sessionRe.test(sheetName)) {
-                                session.from = sheetArray[1][0];
-                                session.to = sheetArray[1][1];
-                                session.siteId = sheetArray[1][2];
-                                session.omniId = sheetArray[1][3];
+                            switch(true) {
+                                case sessionRe.test(sheetName):
+                                    session.from = sheetArray[1][0];
+                                    session.to = sheetArray[1][1];
+                                    session.siteId = sheetArray[1][2];
+                                    session.omniId = sheetArray[1][3];
+                                break;
+                                case patientRe.test(sheetName):
+                                    for(var i = 1; i < sheetArray[0].length; i++) {
+
+                                    }
+                                break;
+                                case medOrderRe.test(sheetName):
+                                    for(var i = 1; i < sheetArray[0].length; i++) {
+                                        
+                                    }
+                                break;
+                                case formularyRe.test(sheetName):
+                                    for(var i = 1; i < sheetArray[0].length; i++) {
+                                            
+                                    }
+                                break;
                             }
                             excelListItem.textContent = sheetName + ', (' + sheetArray.length + ',' + sheetArray[0].length + ')';
                             excelList.appendChild(excelListItem);
