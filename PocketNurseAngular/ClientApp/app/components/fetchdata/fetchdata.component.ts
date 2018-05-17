@@ -57,10 +57,14 @@ export class FetchDataComponent implements OnInit {
                     // call 'xlsx' to read the file
                     this.workbook = XLSX.read(binary, {type: 'binary', cellDates:true, cellStyles:true});
                     var session = new CabinetSession();
-                    var sessionRe = new RegExp('Session',  'i').compile();
-                    var patientRe = new RegExp('Patient Information', 'i').compile();
-                    var medOrderRe = new RegExp('Med Order Information', 'i').compile();
-                    var formularyRe = new RegExp('Items not in PN formulary', 'i').compile();
+                    var sessionRe = new RegExp('Session',  'i');
+                    var patientRe = new RegExp('Patient Information', 'i');
+                    var medOrderRe = new RegExp('Med Order Information', 'i');
+                    var formularyRe = new RegExp('Items not in PN formulary', 'i');
+                    var dobRe = /(\d+)\/(\d+)\/.*/;
+                    var patientTokens = [];
+                    var medOrderTokens = [];
+                    var notInFormularyTokens = [];
                     var listItem = document.createElement('li');
                     var mimeType = fileType(bytes).mime;
                     if (this.validFileType(mimeType)) {
@@ -76,28 +80,32 @@ export class FetchDataComponent implements OnInit {
                         for(let sheetName of this.workbook.SheetNames) {
                             var excelListItem = document.createElement('li');
                             var sheetArray = this.sheetArray(this.workbook.Sheets[sheetName]);
-                            switch(true) {
-                                case sessionRe.test(sheetName):
-                                    session.from = sheetArray[1][0];
-                                    session.to = sheetArray[1][1];
-                                    session.siteId = sheetArray[1][2];
-                                    session.omniId = sheetArray[1][3];
-                                break;
-                                case patientRe.test(sheetName):
-                                    for(var i = 1; i < sheetArray[0].length; i++) {
-
+                            if(sessionRe.test(sheetName)) {
+                                session.from = sheetArray[1][0];
+                                session.to = sheetArray[1][1];
+                                session.siteId = sheetArray[1][2];
+                                session.omniId = sheetArray[1][3];
+                            } else if(patientRe.test(sheetName)) {
+                                for(var i = 1; i < sheetArray.length; i++) {
+                                    var dobString = sheetArray[i][2];
+                                    var match = dobRe.exec(dobString as string);
+                                    var stringToken = `${String("          " + session.from).slice(-10)}${String("          " + session.to).slice(-10)}${"              PA"}\\site:${session.siteId}\\pid:${sheetArray[i][4] ? sheetArray[i][4] : sheetArray[i][3]}\\pna:${sheetArray[i][0] + " " + sheetArray[i][1]}\\dob:0000${match ? String("00" + match[1]).slice(-2) : "00"}${match ? String("00" + match[2]).slice(-2) : "00"}00000000\\alrgy:${sheetArray[i][5]}\\mrn:${sheetArray[i][3]}`;
+                                    patientTokens.push(stringToken);
+                                }
+                            } else if(medOrderRe.test(sheetName)) {
+                                for(var i = 1; i < sheetArray.length; i++) {
+                                    for( var j = 5; j < sheetArray[i].length; j++) {
+                                        if(typeof sheetArray[i][j] === 'undefined') break;
+                                        var stringToken = `${String("          " + session.from).slice(-10)}${String("          " + session.to).slice(-10)}${"             MOA"}\\moid:0\\pid:${sheetArray[i][j]}\\item:${sheetArray[i][0]}\\phyid:0\\phynm:Doctor\\frq:${sheetArray[i][3]}\\mrte:${sheetArray[i][4]}\\dose:${sheetArray[i][2]}`;                                        
+                                        medOrderTokens.push(stringToken);
                                     }
-                                break;
-                                case medOrderRe.test(sheetName):
-                                    for(var i = 1; i < sheetArray[0].length; i++) {
-                                        
-                                    }
-                                break;
-                                case formularyRe.test(sheetName):
-                                    for(var i = 1; i < sheetArray[0].length; i++) {
-                                            
-                                    }
-                                break;
+                                }
+                            } else if(formularyRe.test(sheetName)) {
+                                for(var i = 1; i < sheetArray[0].length; i++) {
+                                    if(typeof sheetArray[i][0] === 'undefined' ||
+                                       typeof sheetArray[i][1] === 'undefined') continue;
+                                    var stringToken = `\\osi:${session.omniId}\\item:${sheetArray[i][0]}\\ina:${sheetArray[i][1]}\\dssa:${sheetArray[i][2]}\\dssu:${sheetArray[i][3]}\\dsva:${sheetArray[i][6]}\\dsa:${sheetArray[i][4]}\\dsu:${sheetArray[i][5]}\\dsf:${sheetArray[i][7]}`;                                     
+                                    notInFormularyTokens.push(stringToken);                                }
                             }
                             excelListItem.textContent = sheetName + ', (' + sheetArray.length + ',' + sheetArray[0].length + ')';
                             excelList.appendChild(excelListItem);
@@ -120,7 +128,9 @@ export class FetchDataComponent implements OnInit {
                var nextCell = sheet[
                   XLSX.utils.encode_cell({r: rowNum, c: colNum})
                ];
-               if( typeof nextCell !== 'undefined' ){
+               if( typeof nextCell === 'undefined' ){
+                row.push(void 0);
+               } else {
                 row.push(nextCell.w);
                }
             }
