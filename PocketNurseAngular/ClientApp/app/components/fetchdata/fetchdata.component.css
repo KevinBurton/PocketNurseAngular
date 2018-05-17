@@ -2,7 +2,7 @@ html {
     font-family: sans-serif;
 }
 
-form#upload {
+#upload {
     width: 600px;
     background: #ccc;
     margin: 0 auto;
@@ -10,11 +10,11 @@ form#upload {
     border: 1px solid black;
 }
 
-    form#upload ol {
+    #upload ol {
         padding-left: 0;
     }
 
-    form#upload li, div > p {
+    #upload li, div > p {
         background: #eee;
         display: flex;
         justify-content: space-between;
@@ -23,17 +23,17 @@ form#upload {
         border: 1px solid black;
     }
 
-    form#upload img {
+    #upload img {
         height: 64px;
         order: 1;
     }
 
-    form#upload p {
+    #upload p {
         line-height: 32px;
         padding-left: 10px;
     }
 
-    form#upload label, form#upload button {
+    #upload label, #upload button {
         color: #6bb333;
         background-color: #fff;
         padding: 5px 10px;
@@ -44,12 +44,12 @@ form#upload {
         height: auto;
     }
 
-    form#upload label:hover, form#upload button:hover {
+    #upload label:hover, #upload button:hover {
         background-color: #2D5BA3;
         color: white;
     }
 
-    form#upload label:active, form#upload button:active {
+    #upload label:active, #upload button:active {
         background-color: #0D3F8F;
         color: white;
     }
