@@ -20,11 +20,11 @@ export class FetchDataComponent implements OnInit {
         this.name = null;
         this.workbook = null;
     }
-    
+
     ngOnInit(){
     }
 
-    updateImageDisplay(input: HTMLInputElement, preview: HTMLDivElement) {
+    updateImageDisplay(input: HTMLInputElement, preview: HTMLDivElement): void {
         while (preview.firstChild) {
             preview.removeChild(preview.firstChild);
         }
@@ -79,7 +79,7 @@ export class FetchDataComponent implements OnInit {
             fileReader.readAsArrayBuffer(curFiles[0]);
         }
     };
-    validFileType(fileType: String) {
+    validFileType(fileType: String): Boolean {
         for (var i = 0; i < this.fileTypes.length; i++) {
             if (fileType === this.fileTypes[i]) {
                 return true;
@@ -87,13 +87,15 @@ export class FetchDataComponent implements OnInit {
         }
         return false;
     };
-    returnFileSize(number: number) {
+    returnFileSize(number: number): String {
         if (number < 1024) {
             return number + 'bytes';
         } else if (number >= 1024 && number < 1048576) {
             return (number / 1024).toFixed(1) + 'KB';
         } else if (number >= 1048576) {
             return (number / 1048576).toFixed(1) + 'MB';
+        } else {
+            return '';
         }
     };
 }
