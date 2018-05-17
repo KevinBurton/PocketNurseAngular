@@ -9,7 +9,8 @@ import * as fileType from 'file-type';
     styleUrls: [ './fetchdata.component.css' ]
 })
 export class FetchDataComponent implements OnInit {
-    content: ArrayBuffer
+    content: ArrayBuffer;
+    name: String;
     fileTypes: string[] = [
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     ];
@@ -34,6 +35,7 @@ export class FetchDataComponent implements OnInit {
             para.textContent = 'No files currently selected for upload';
             preview.appendChild(para);
         } else {
+            this.name = curFiles[0].name;
             var list = document.createElement('ul');
             preview.appendChild(list);
 
@@ -55,24 +57,23 @@ export class FetchDataComponent implements OnInit {
                         console.log(sheetName);
                         console.log(range.e);        
                     }
+                    var listItem = document.createElement('li');
+                    var mimeType = fileType(bytes).mime;
+                    if (this.validFileType(mimeType)) {
+                        listItem.textContent = 'File name ' + this.name + ', file size ' + this.returnFileSize(this.content.byteLength) + '.';
+                    } else {
+                        listItem.textContent = 'File name ' + this.name + ': Not a valid file type (' + mimeType + '). Update your selection.';
+                    }
+    
+                    list.appendChild(listItem);
                 }
             }
             fileReader.readAsArrayBuffer(curFiles[0]);
-
-                var listItem = document.createElement('li');
-                if (this.validFileType(curFiles[0])) {
-                    listItem.textContent = 'File name ' + curFiles[0].name + ', file size ' + this.returnFileSize(curFiles[0].size) + '.';
-                } else {
-                    listItem.textContent = 'File name ' + curFiles[0].name + ': Not a valid file type (' + curFiles[0].type + '). Update your selection.';
-                }
-
-                list.appendChild(listItem);
-
         }
     };
-    validFileType(file: File) {
+    validFileType(fileType: String) {
         for (var i = 0; i < this.fileTypes.length; i++) {
-            if (file.type === this.fileTypes[i]) {
+            if (fileType === this.fileTypes[i]) {
                 return true;
             }
         }
