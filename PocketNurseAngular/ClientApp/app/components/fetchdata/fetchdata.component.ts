@@ -130,8 +130,12 @@ export class FetchDataComponent {
                     }
                     this.tokenService.addPatients(patientTokens)
                         .subscribe( data => {
+                                        console.log('OK');
                                     },
-                                    error => this.errorMessage = <any>error);
+                                    error => {
+                                        console.error(error);
+                                        this.errorMessage = <any>error;
+                                    });
                 } else if(medOrderRe.test(sheetName)) {
                     for(var i = 1; i < sheetArray.length; i++) {
                         for( var j = 5; j < sheetArray[i].length; j++) {
@@ -140,20 +144,32 @@ export class FetchDataComponent {
                             medOrderTokens.push(stringToken);
                         }
                     }
-                    this.tokenService.addMedicationOrders(medOrderTokens)
+                    if(medOrderTokens.length > 0) {
+                        this.tokenService.addMedicationOrders(medOrderTokens)
                         .subscribe( data => {
+                                        console.log('OK');
                                     },
-                                    error => this.errorMessage = <any>error);
+                                    error => {
+                                        console.error(error);
+                                        this.errorMessage = <any>error;
+                                    });
+                    }
                 } else if(formularyRe.test(sheetName)) {
                     for(var i = 1; i < sheetArray.length; i++) {
                         if(typeof sheetArray[i][0] === 'undefined') continue;
                         var stringToken = `\\osi:${session.omniId}\\item:${sheetArray[i][0]}\\ina:${sheetArray[i][1]}\\dssa:${sheetArray[i][2]}\\dssu:${sheetArray[i][3]}\\dsva:${sheetArray[i][6]}\\dsa:${sheetArray[i][4]}\\dsu:${sheetArray[i][5]}\\dsf:${sheetArray[i][7]}`;                                     
                         notInFormularyTokens.push(stringToken);
                     }
-                    this.tokenService.addItems(notInFormularyTokens)
-                        .subscribe( data => {
-                                    },
-                                    error => this.errorMessage = <any>error);
+                    if(notInFormularyTokens.length > 0) {
+                        this.tokenService.addItems(notInFormularyTokens)
+                            .subscribe( data => {
+                                            console.log('OK');
+                                        },
+                                        error => {
+                                            console.error(error);
+                                            this.errorMessage = <any>error;
+                                        });                        
+                    }
                 }
             }
         }

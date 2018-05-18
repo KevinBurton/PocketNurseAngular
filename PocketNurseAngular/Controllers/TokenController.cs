@@ -13,18 +13,30 @@ namespace PocketNurseAngular.Controllers
         [HttpPost]
         public IActionResult Patient(string patients)
         {
+            if(string.IsNullOrWhiteSpace(patients))
+            {
+                return BadRequest();
+            }
             return Ok();
         }
         [Route("MedicationOrder")]
         [HttpPost]
         public IActionResult MedicationOrder(string medorders)
         {
+            if(string.IsNullOrWhiteSpace(medorders))
+            {
+                return BadRequest();
+            }
             return Ok();
         }
         [Route("Item")]
         [HttpPost]
         public IActionResult Item(string items)
         {
+            if(string.IsNullOrWhiteSpace(items))
+            {
+                return BadRequest();
+            }
             return Ok();
         }       
     }
