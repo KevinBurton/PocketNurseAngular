@@ -8,13 +8,16 @@ import { AppComponent } from './components/app/app.component';
 import { NavMenuComponent } from './components/navmenu/navmenu.component';
 import { HomeComponent } from './components/home/home.component';
 import { FetchDataComponent } from './components/fetchdata/fetchdata.component';
-
+import { TokenService } from './service/token.service';
 @NgModule({
     declarations: [
         AppComponent,
         NavMenuComponent,
         FetchDataComponent,
         HomeComponent
+    ],
+    providers: [
+        TokenService
     ],
     imports: [
         CommonModule,

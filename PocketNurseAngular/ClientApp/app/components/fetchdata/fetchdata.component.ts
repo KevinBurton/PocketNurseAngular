@@ -1,28 +1,27 @@
-import { Component, Input, ViewChild, ElementRef, OnInit } from '@angular/core';
-import { Http } from '@angular/http';
+
+import { Component, Input } from '@angular/core';
+import { Observable } from 'rxjs';
 import * as XLSX from 'xlsx';
 import * as fileType from 'file-type';
 import { MaxLengthValidator } from '@angular/forms';
 import { CabinetSession } from '../../shared/session';
+import { TokenService } from '../../service/token.service';
 
 @Component({
     selector: 'fetchdata',
     templateUrl: './fetchdata.component.html',
     styleUrls: [ './fetchdata.component.css' ]
 })
-export class FetchDataComponent implements OnInit {
+export class FetchDataComponent {
     name: String | undefined | null;
     workbook: XLSX.WorkBook | undefined | null;
     fileTypes: string[] = [
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     ];
 
-    constructor() {
+    constructor(private tokenService: TokenService) {
         this.name = null;
         this.workbook = null;
-    }
-
-    ngOnInit(){
     }
 
     updateImageDisplay(input: HTMLInputElement, preview: HTMLDivElement): void {
@@ -80,7 +79,7 @@ export class FetchDataComponent implements OnInit {
             fileReader.readAsArrayBuffer(curFiles[0]);
         }
     };
-    sheetArray (sheet: XLSX.WorkSheet): any[][] {
+    private sheetArray (sheet: XLSX.WorkSheet): any[][] {
         var result = [];
         var row;
         var rowNum;
@@ -101,7 +100,7 @@ export class FetchDataComponent implements OnInit {
             result.push(row);
         }
         return result;
-     };
+    };
     uploadTokens(): void {
         var session = new CabinetSession();
         var sessionRe = new RegExp('Session',  'i');
@@ -146,15 +145,15 @@ export class FetchDataComponent implements OnInit {
             }
         }
     }     
-    validFileType(fileType: String): Boolean {
+    private validFileType(fileType: String): Boolean {
         for (var i = 0; i < this.fileTypes.length; i++) {
             if (fileType === this.fileTypes[i]) {
                 return true;
             }
         }
         return false;
-    };
-    returnFileSize(number: number): String {
+    }
+    private returnFileSize(number: number): String {
         if (number < 1024) {
             return number + 'bytes';
         } else if (number >= 1024 && number < 1048576) {
@@ -164,5 +163,5 @@ export class FetchDataComponent implements OnInit {
         } else {
             return '';
         }
-    };
+    }
 }
