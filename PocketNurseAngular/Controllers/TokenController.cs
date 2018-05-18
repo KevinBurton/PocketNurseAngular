@@ -11,9 +11,9 @@ namespace PocketNurseAngular.Controllers
     {
         [Route("Patient")]
         [HttpPost]
-        public IActionResult Patient(string patients)
+        public IActionResult Patient([FromBody]string[] patients)
         {
-            if(string.IsNullOrWhiteSpace(patients))
+            if(patients == null || patients.Length < 1 || patients.Any(p => string.IsNullOrWhiteSpace(p)))
             {
                 return BadRequest();
             }
@@ -21,9 +21,9 @@ namespace PocketNurseAngular.Controllers
         }
         [Route("MedicationOrder")]
         [HttpPost]
-        public IActionResult MedicationOrder(string medorders)
+        public IActionResult MedicationOrder([FromBody]string[] medorders)
         {
-            if(string.IsNullOrWhiteSpace(medorders))
+            if(medorders == null || medorders.Length < 1 || medorders.Any(m => string.IsNullOrWhiteSpace(m)))
             {
                 return BadRequest();
             }
@@ -31,9 +31,9 @@ namespace PocketNurseAngular.Controllers
         }
         [Route("Item")]
         [HttpPost]
-        public IActionResult Item(string items)
+        public IActionResult Item([FromBody]string[] items)
         {
-            if(string.IsNullOrWhiteSpace(items))
+            if(items == null || items.Length < 1 || items.Any(i => string.IsNullOrWhiteSpace(i)))
             {
                 return BadRequest();
             }

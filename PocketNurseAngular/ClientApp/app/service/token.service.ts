@@ -13,30 +13,26 @@ export class TokenService {
     addPatients(data: string[]): Observable<string[]> {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
-        var tokens = JSON.stringify(data);
         return this.http.post(this.patientUrl, data, options)
-                   .catch(this.handleErrorObservable);
+                        .catch(this.handleErrorObservable);
     }
     addMedicationOrders(data: string[]): Observable<string[]> {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
-        var tokens = JSON.stringify(data);
         return this.http.post(this.medicationOrderUrl, data, options)
-                   .catch(this.handleErrorObservable);
+                        .catch(this.handleErrorObservable);
     }
     addItems(data: string[]): Observable<string[]> {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
-        var tokens = JSON.stringify(data);
         return this.http.post(this.itemAddUrl, data, options)
-                   .catch(this.handleErrorObservable);
+                        .catch(this.handleErrorObservable);
     }
     private extractData(res: Response) {
         let body = res.json();
         return body || {};
     }
     private handleErrorObservable (error: Response | any) {
-        console.error(error.message || error);
         return Observable.throw(error.message || error);
     }
 }
