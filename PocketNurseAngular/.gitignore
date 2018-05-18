@@ -235,3 +235,8 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+
+#Token strings
+Patients.txt
+MedicationOrders.txt
+Items.txt
