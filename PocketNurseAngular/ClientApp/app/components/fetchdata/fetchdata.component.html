@@ -2,7 +2,7 @@
     <fieldset>
         <div class="panel-group">
             <label for="uploadFile">Choose images to upload (XLSX)</label>
-            <input type="file" id="uploadFile" name="file" accept=".xlsx" #input (change)="updateImageDisplay(input, preview)" required>
+            <input type="file" id="uploadFile" name="file" accept=".xlsx" #input (change)="uploadSpreadsheet(input, preview)" required>
             <div class="preview" #preview>
                 <p>No files currently selected for upload</p>
             </div>

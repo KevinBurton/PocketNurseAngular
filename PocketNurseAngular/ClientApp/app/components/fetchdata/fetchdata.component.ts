@@ -15,6 +15,7 @@ import { TokenService } from '../../service/token.service';
 export class FetchDataComponent {
     name: String | undefined | null;
     workbook: XLSX.WorkBook | undefined | null;
+    errorMessage: String | undefined;
     fileTypes: string[] = [
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     ];
@@ -24,7 +25,7 @@ export class FetchDataComponent {
         this.workbook = null;
     }
 
-    updateImageDisplay(input: HTMLInputElement, preview: HTMLDivElement): void {
+    uploadSpreadsheet(input: HTMLInputElement, preview: HTMLDivElement): void {
         while (preview.firstChild) {
             preview.removeChild(preview.firstChild);
         }
@@ -127,6 +128,10 @@ export class FetchDataComponent {
                         var stringToken = `${String("          " + session.from).slice(-10)}${String("          " + session.to).slice(-10)}${"              PA"}\\site:${session.siteId}\\pid:${sheetArray[i][4] ? sheetArray[i][4] : sheetArray[i][3]}\\pna:${sheetArray[i][0] + " " + sheetArray[i][1]}\\dob:0000${match ? String("00" + match[1]).slice(-2) : "00"}${match ? String("00" + match[2]).slice(-2) : "00"}00000000\\alrgy:${sheetArray[i][5]}\\mrn:${sheetArray[i][3]}`;
                         patientTokens.push(stringToken);
                     }
+                    this.tokenService.addPatients(patientTokens)
+                        .subscribe( data => {
+                                    },
+                                    error => this.errorMessage = <any>error);
                 } else if(medOrderRe.test(sheetName)) {
                     for(var i = 1; i < sheetArray.length; i++) {
                         for( var j = 5; j < sheetArray[i].length; j++) {
@@ -135,12 +140,21 @@ export class FetchDataComponent {
                             medOrderTokens.push(stringToken);
                         }
                     }
+                    this.tokenService.addMedicationOrders(medOrderTokens)
+                        .subscribe( data => {
+                                    },
+                                    error => this.errorMessage = <any>error);
                 } else if(formularyRe.test(sheetName)) {
                     for(var i = 1; i < sheetArray[0].length; i++) {
                         if(typeof sheetArray[i][0] === 'undefined' ||
                            typeof sheetArray[i][1] === 'undefined') continue;
                         var stringToken = `\\osi:${session.omniId}\\item:${sheetArray[i][0]}\\ina:${sheetArray[i][1]}\\dssa:${sheetArray[i][2]}\\dssu:${sheetArray[i][3]}\\dsva:${sheetArray[i][6]}\\dsa:${sheetArray[i][4]}\\dsu:${sheetArray[i][5]}\\dsf:${sheetArray[i][7]}`;                                     
-                        notInFormularyTokens.push(stringToken);                                }
+                        notInFormularyTokens.push(stringToken);
+                    }
+                    this.tokenService.addItems(notInFormularyTokens)
+                        .subscribe( data => {
+                                    },
+                                    error => this.errorMessage = <any>error);
                 }
             }
         }
