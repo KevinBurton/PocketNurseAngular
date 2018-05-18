@@ -130,7 +130,7 @@ export class FetchDataComponent {
                     }
                     this.tokenService.addPatients(patientTokens)
                         .subscribe( data => {
-                                        console.log('OK');
+                                        console.log(data.url);
                                     },
                                     error => {
                                         console.error(error);
@@ -147,7 +147,7 @@ export class FetchDataComponent {
                     if(medOrderTokens.length > 0) {
                         this.tokenService.addMedicationOrders(medOrderTokens)
                         .subscribe( data => {
-                                        console.log('OK');
+                                        console.log(data.url);
                                     },
                                     error => {
                                         console.error(error);
@@ -163,7 +163,7 @@ export class FetchDataComponent {
                     if(notInFormularyTokens.length > 0) {
                         this.tokenService.addItems(notInFormularyTokens)
                             .subscribe( data => {
-                                            console.log('OK');
+                                            console.log(data.url);
                                         },
                                         error => {
                                             console.error(error);

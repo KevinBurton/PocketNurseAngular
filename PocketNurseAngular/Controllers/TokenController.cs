@@ -11,33 +11,33 @@ namespace PocketNurseAngular.Controllers
     {
         [Route("Patient")]
         [HttpPost]
-        public IActionResult Patient([FromBody]string[] patients)
+        public void Patient([FromBody]string[] patients)
         {
             if(patients == null || patients.Length < 1 || patients.Any(p => string.IsNullOrWhiteSpace(p)))
             {
-                return BadRequest();
+                return;
             }
-            return Ok();
+            return;
         }
         [Route("MedicationOrder")]
         [HttpPost]
-        public IActionResult MedicationOrder([FromBody]string[] medorders)
+        public void MedicationOrder([FromBody]string[] medorders)
         {
             if(medorders == null || medorders.Length < 1 || medorders.Any(m => string.IsNullOrWhiteSpace(m)))
             {
-                return BadRequest();
+                return;
             }
-            return Ok();
+            return;
         }
         [Route("Item")]
         [HttpPost]
-        public IActionResult Item([FromBody]string[] items)
+        public void Item([FromBody]string[] items)
         {
             if(items == null || items.Length < 1 || items.Any(i => string.IsNullOrWhiteSpace(i)))
             {
-                return BadRequest();
+                return;
             }
-            return Ok();
+            return;
         }       
     }
 }

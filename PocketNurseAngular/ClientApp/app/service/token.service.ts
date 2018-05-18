@@ -10,27 +10,23 @@ export class TokenService {
     itemAddUrl = "/api/Token/Item";
     constructor(private http:Http) {}
 
-    addPatients(data: string[]): Observable<string[]> {
+    addPatients(data: string[]): Observable<Response> {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
         return this.http.post(this.patientUrl, data, options)
                         .catch(this.handleErrorObservable);
     }
-    addMedicationOrders(data: string[]): Observable<string[]> {
+    addMedicationOrders(data: string[]): Observable<Response> {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
         return this.http.post(this.medicationOrderUrl, data, options)
                         .catch(this.handleErrorObservable);
     }
-    addItems(data: string[]): Observable<string[]> {
+    addItems(data: string[]): Observable<Response> {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
         return this.http.post(this.itemAddUrl, data, options)
                         .catch(this.handleErrorObservable);
-    }
-    private extractData(res: Response) {
-        let body = res.json();
-        return body || {};
     }
     private handleErrorObservable (error: Response | any) {
         return Observable.throw(error.message || error);
