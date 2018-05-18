@@ -145,9 +145,8 @@ export class FetchDataComponent {
                                     },
                                     error => this.errorMessage = <any>error);
                 } else if(formularyRe.test(sheetName)) {
-                    for(var i = 1; i < sheetArray[0].length; i++) {
-                        if(typeof sheetArray[i][0] === 'undefined' ||
-                           typeof sheetArray[i][1] === 'undefined') continue;
+                    for(var i = 1; i < sheetArray.length; i++) {
+                        if(typeof sheetArray[i][0] === 'undefined') continue;
                         var stringToken = `\\osi:${session.omniId}\\item:${sheetArray[i][0]}\\ina:${sheetArray[i][1]}\\dssa:${sheetArray[i][2]}\\dssu:${sheetArray[i][3]}\\dsva:${sheetArray[i][6]}\\dsa:${sheetArray[i][4]}\\dsu:${sheetArray[i][5]}\\dsf:${sheetArray[i][7]}`;                                     
                         notInFormularyTokens.push(stringToken);
                     }
